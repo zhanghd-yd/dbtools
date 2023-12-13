@@ -74,7 +74,7 @@ std::string FieldInfo::getSQLCond() {
     return move(s);
 }
 
-std::string DBAG::BaseDBDao::genSelectSQL(bool addSemicolon, const std::vector<FieldInfo>& infos)
+std::string DBAG::BaseDBDao::genSelectSQL(const std::vector<FieldInfo>& infos)
 {
     std::stringstream ss;
     //DLOG(INFO) << "tableName : " << getTableName();
@@ -150,9 +150,6 @@ std::string DBAG::BaseDBDao::genSelectSQL(bool addSemicolon, const std::vector<F
         ss << wcond;
     }
 
-    if (addSemicolon) {
-        ss << ";";
-    }
     std::string sql = ss.str();
     DLOG(INFO) << "Select SQL: " << sql;
     return move(sql);

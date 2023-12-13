@@ -28,10 +28,13 @@ std::vector<std::string> DBAG::TestDBGenDao::getColumnList()
 RTTR_REGISTRATION
 {
 	rttr::registration::class_<RegisterClassName>("DBAG::Test")
-		.constructor<>()(rttr::policy::ctor::as_std_shared_ptr)
-		.property("id", &RegisterClassName::id)
-		.property("name", &RegisterClassName::name)
-		.property("score", &RegisterClassName::score)
-		.property("date", &RegisterClassName::date)
+	.constructor<>()(
+		//rttr::policy::ctor::as_std_shared_ptr
+		rttr::policy::ctor::as_raw_ptr
+		)
+	.property("id", &RegisterClassName::id)
+	.property("name", &RegisterClassName::name)
+	.property("score", &RegisterClassName::score)
+	.property("date", &RegisterClassName::date)
 	;
 }
