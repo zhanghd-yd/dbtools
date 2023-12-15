@@ -1,4 +1,3 @@
-
 #include "env_dataStruct.h"
 
 #define RegisterClassName DBAG::env_data
@@ -29,21 +28,21 @@ std::vector<std::string> DBAG::env_dataDBGenDao::getColumnList()
 RTTR_REGISTRATION
 {
 	rttr::registration::class_<RegisterClassName>("DBAG::env_data")
-		.property("NcFileDataName", &RegisterClassName::NcFileDataName)
-		.property("Name", &RegisterClassName::Name)
-		.property("TimeStamp", &RegisterClassName::TimeStamp)
-		.property("LonBegin", &RegisterClassName::LonBegin)
-		.property("LonEnd", &RegisterClassName::LonEnd)
-		.property("LonStep", &RegisterClassName::LonStep)
-		.property("LonCount", &RegisterClassName::LonCount)
-		.property("LatBegin", &RegisterClassName::LatBegin)
-		.property("LatEnd", &RegisterClassName::LatEnd)
-		.property("LatStep", &RegisterClassName::LatStep)
-		.property("LatCount", &RegisterClassName::LatCount)
-		.property("DepthBegin", &RegisterClassName::DepthBegin)
-		.property("DepthEnd", &RegisterClassName::DepthEnd)
-		.property("DepthStep", &RegisterClassName::DepthStep)
-		.property("DepthCount", &RegisterClassName::DepthCount)
-		.property("MD5", &RegisterClassName::MD5)
+		.property("NcFileDataName", &RegisterClassName::NcFileDataName)(rttr::metadata("cn",std::string("处理后的数据文件名")))
+		.property("Name", &RegisterClassName::Name)(rttr::metadata("cn",u8"环境数据属性名"))
+		.property("TimeStamp", &RegisterClassName::TimeStamp)(rttr::metadata("cn",u8"试验时间"))
+		.property("LonBegin", &RegisterClassName::LonBegin)(rttr::metadata("cn",u8"起始经度"))
+		.property("LonEnd", &RegisterClassName::LonEnd)(rttr::metadata("cn",u8"终止经度"))
+		.property("LonStep", &RegisterClassName::LonStep)(rttr::metadata("cn",u8"经度跨度"))
+		.property("LonCount", &RegisterClassName::LonCount)(rttr::metadata("cn",u8"经度数量"))
+		.property("LatBegin", &RegisterClassName::LatBegin)(rttr::metadata("cn",u8"起始纬度"))
+		.property("LatEnd", &RegisterClassName::LatEnd)(rttr::metadata("cn",u8"终止纬度"))
+		.property("LatStep", &RegisterClassName::LatStep)(rttr::metadata("cn",u8"纬度跨步"))
+		.property("LatCount", &RegisterClassName::LatCount)(rttr::metadata("cn",u8"纬度数量"))
+		.property("DepthBegin", &RegisterClassName::DepthBegin)(rttr::metadata("cn",u8"起始深度"))
+		.property("DepthEnd", &RegisterClassName::DepthEnd)(rttr::metadata("cn",u8"终止深度"))
+		.property("DepthStep", &RegisterClassName::DepthStep)(rttr::metadata("cn",u8"深度跨度"))
+		.property("DepthCount", &RegisterClassName::DepthCount)(rttr::metadata("cn",u8"深度数量"))
+		.property("MD5", &RegisterClassName::MD5)(rttr::metadata("cn",u8"nc文件md5验证码"))
 		;
 }

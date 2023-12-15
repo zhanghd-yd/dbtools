@@ -2,6 +2,8 @@
 #include <string>
 #include <QDateTime>
 #include <iostream>
+#include <QApplication>
+#include "rttr_serialization/to_json.h"
 
 #include "base/MysqlConnection.h"
 #include "base/DataTables.h"
@@ -9,7 +11,7 @@
 #include "DBDataAutoGen/TestStruct.h"
 #include "DBDataAutoGen/env_dataStruct.h"
 
-#include "rttr_serialization/to_json.h"
+#include "DBServer/EnvDataManager.h"
 
 template<class T>
 class TestR {
@@ -28,13 +30,17 @@ int main(int argc, char** argv) {
 	FLAGS_alsologtostderr = 1;
 	FLAGS_colorlogtostderr = true;
 	
+	QApplication a(argc, argv);
+
 	using namespace DBAG;
 
+#if  0
 	TestR<Test> tr;
 	tr.print(); //test rttr
+#endif //  0
 
+#if 0 // test ok
 	LOG(WARNING) << "============  start gen sql ============ \n";
-#if 1 // test ok
 	{
 		TestDBGenDao testGen;
 		std::vector<FieldInfo> infos;
@@ -93,22 +99,25 @@ int main(int argc, char** argv) {
 		testData.date = QDate::currentDate().toString("yyyy-MM-dd").toStdString();
 		auto list = testGen.getColumnList();
 		testGen.genInsertSQL<Test>(list, testData);
+
+		testGen.genBatchDeleteSQL<int>({1,2,3,4,5,6});
+		testGen.genBatchDeleteSQL<std::string>({ std::string("abc"),std::string("abc"),std::string("abc"),std::string("abc") });
 	}
 #endif
 
+#if 1
+	MysqlConnectionPool& bizSatPool = eHualu::ConnectionPools::GetBizSatPool();
+	bizSatPool.Connect("127.0.0.1", 3306, "root", "root", "hl_earth_eiea");
+#endif
 
-#if 0 // test ok
+#if 1 // test ok
 	LOG(WARNING) << "\n =========== start query db ============\n";
-
 	/////////////////
 	{
-		MysqlConnectionPool& bizSatPool = eHualu::ConnectionPools::GetBizSatPool();
-		bizSatPool.Connect("127.0.0.1", 3306, "root", "root", "hl_earth_eiea");
-
 		env_dataDBGenDao dao;
 
 		env_data dData;
-		dData.NcFileDataName = "NcFileDataName";
+		dData.NcFileDataName = "NcFileDataName_0";
 		dData.Name = "name";
 		dData.TimeStamp = "2023-12-01 00:00:00";
 		dData.LonBegin = 90.5;
@@ -127,6 +136,11 @@ int main(int argc, char** argv) {
 		auto list = dao.getColumnList();
 		dao.executeDelete<std::string>("NcFileDataName");
 		dao.executeInsert<env_data>(list, dData);
+		dData.NcFileDataName = "NcFileDataName_1";
+		dao.executeInsert<env_data>(list, dData);
+		dData.NcFileDataName = "NcFileDataName_2";
+		dao.executeInsert<env_data>(list, dData);
+		
 		std::vector<env_data> env_dataList = dao.executeSelect<env_data>();
 		for (const auto& e : env_dataList) {
 			LOG(INFO) << io::to_json(e);
@@ -134,5 +148,9 @@ int main(int argc, char** argv) {
 	}
 #endif
 
-	return 0;
+	BaseDBWidget* gui = new EnvDataManager;
+	gui->loadTableHeader();
+	gui->show();
+
+	return a.exec();
 }

@@ -18,6 +18,7 @@ std::vector<std::string> DBAG::TestDBGenDao::getColumnList()
 {
 	std::vector<std::string> list;
 	rttr::type t = rttr::type::get<RegisterClassName>();
+
 	for (auto& prop : t.get_properties()){
 		list.emplace_back(prop.get_name().to_string());
 	}

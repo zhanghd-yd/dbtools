@@ -9,90 +9,17 @@
 
 #include <type_traits>
 #include <rttr/registration>
+#include "rttr_serialization/to_json.h"
 
 //////////////
 #include "base/MysqlConnection.h"
 #include "base/DataTables.h"
 #include "mysql/mysql.h"
-//////////////
 
-////////////helper
-static inline double readf(const char* sValue)
-{
-	if (sValue == NULL)
-		return 0.0;
-	double fRes = atof(sValue);
-	if (abs(fRes) < 1e-20 || abs(fRes) > 1e15)
-		return 0.0;
-	return fRes;
-}
-
-static inline int readi(const char* sValue)
-{
-	if (sValue == NULL)
-		return 0;
-	return atoi(sValue);
-}
-
-static inline long long readi64(const char* sValue)
-{
-	if (sValue == NULL)
-		return 0;
-	return atoll(sValue);
-}
-////////////helper
+#include "BaseDBData.h"
 
 namespace DBAG {
-	enum class FieldType : int {
-		INT,
-		LONGLONG,
-		FLOAT,
-		DOUBLE,
-		STRING,
-		DATE,
-		DATETIME
-	};
-
-	enum class WhereCond : int {
-		//only support number !!
-		EQUAL,
-		LESS,
-		LESSEQUAL,
-		MORE,
-		MOREEQUAL,
-		IN,
-
-		//only support string !!
-		LIKE,
-		EQUALSTRING,
-
-		//only support date(yyyy-MM-dd) !!
-		DATEEQUAL,
-		DATELESS,
-		DATELESSEQUAL,
-		DATEMORE,
-		DATEMOREEQUAL,
-
-		//only support datetime(yyyy-MM-dd HH:mm:ss) !!
-		DATETIMEEQUAL,
-		DATETIMELESS,
-		DATETIMELESSEQUAL,
-		DATETIMEMORE,
-		DATETIMEMOREEQUAL
-	};
-
-	class FieldInfo {
-	public:
-		std::string _name;
-		std::any _value;
-
-		std::string _conn{ "and" };
-		WhereCond _cond;
-		FieldType _type;
-
-		std::string getSQLCond();
-	};
-
+	
 	class BaseDBDao {
 	public:
 		BaseDBDao() = default;
@@ -114,6 +41,12 @@ namespace DBAG {
 		std::string genDeleteSQL<std::string>(std::string pKey);
 
 		template<class T>
+		std::string genBatchDeleteSQL(const std::vector<T>& pKey);
+
+		template<>
+		std::string genBatchDeleteSQL<std::string>(const std::vector<std::string>& pKey);
+
+		template<class T>
 		std::string genInsertSQL(std::vector<std::string>& column, T obj);
 
 		template<class T>
@@ -128,6 +61,12 @@ namespace DBAG {
 
 		template<>
 		int executeDelete<std::string>(std::string pKey);
+
+		template<class T>
+		int executeBitchDelete(const std::vector<T>& pKeyList);
+
+		template<>
+		int executeBitchDelete<std::string>(const std::vector<std::string>& pKeyList);
 
 		template<class T>
 		int executeInsert(std::vector<std::string>& column, T obj);
@@ -155,6 +94,35 @@ namespace DBAG {
 	{
 		std::string baseSQL = fmt::format("delete from {} where {} = '{}'", getTableName(), getPrimarykey(), pKey);
 		DLOG(INFO) << "Delete SQL: " << baseSQL;
+		return move(baseSQL);
+	}
+
+	template<class T>
+	inline std::string BaseDBDao::genBatchDeleteSQL(const std::vector<T>& pKeyList)
+	{
+		std::stringstream ss{};
+		for (const auto& s : pKeyList) {
+			ss << s << ",";
+		}
+		std::string sp = ss.str();
+		sp = sp.substr(0, sp.size() - 1);
+		
+		std::string baseSQL = fmt::format("delete from {} where {} in ({})", getTableName(), getPrimarykey(), sp);
+		DLOG(INFO) << "Batch Delete SQL: " << baseSQL;
+		return move(baseSQL);
+	}
+
+	template<>
+	inline std::string BaseDBDao::genBatchDeleteSQL<std::string>(const std::vector<std::string>& pKeyList){
+		std::stringstream ss{};
+		for (const auto& s : pKeyList) {
+			ss << "'" << s + "',";
+		}
+		std::string sp = ss.str();
+		sp = sp.substr(0, sp.size() - 1);
+
+		std::string baseSQL = fmt::format("delete from {} where {} in ({})", getTableName(), getPrimarykey(), sp);
+		DLOG(INFO) << "Batch Delete SQL: " << baseSQL;
 		return move(baseSQL);
 	}
 
@@ -234,7 +202,7 @@ namespace DBAG {
 			MYSQL_ROW row;
 			while ((row = mysql_fetch_row(res_set)) != NULL)
 			{
-				/* 253 12 5 3
+				/*
 				enum enum_field_types { MYSQL_TYPE_DECIMAL, MYSQL_TYPE_TINY,
                     MYSQL_TYPE_SHORT,  MYSQL_TYPE_LONG,
                     MYSQL_TYPE_FLOAT,  MYSQL_TYPE_DOUBLE,
@@ -330,6 +298,25 @@ namespace DBAG {
 		b ? DLOG(INFO) << "executeDelete success" : DLOG(WARNING) << "executeDelete failed";
 		return b;
 	}
+	template<class T>
+	inline int BaseDBDao::executeBitchDelete(const std::vector<T>& pKeyList)
+	{
+		std::string sql = genBatchDeleteSQL<T>(pKeyList);
+		MysqlConnectionPool& connectPool = eHualu::ConnectionPools::GetBizSatPool();
+		bool b = connectPool.GetMysqlConnection()->ExecuteSQL(sql);
+		b ? DLOG(INFO) << "executeDelete success" : DLOG(WARNING) << "executeDelete failed";
+		return b;
+	}
+
+	template<>
+	inline int BaseDBDao::executeBitchDelete<std::string>(const std::vector<std::string>& pKeyList) {
+		std::string sql = genBatchDeleteSQL<std::string>(pKeyList);
+		MysqlConnectionPool& connectPool = eHualu::ConnectionPools::GetBizSatPool();
+		bool b = connectPool.GetMysqlConnection()->ExecuteSQL(sql);
+		b ? DLOG(INFO) << "executeDelete success" : DLOG(WARNING) << "executeDelete failed";
+		return b;
+	}
+
 	template<class T>
 	inline int BaseDBDao::executeInsert(std::vector<std::string>& column, T obj)
 	{
