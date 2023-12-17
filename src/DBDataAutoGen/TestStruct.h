@@ -6,13 +6,16 @@
 #include <type_traits>
 #include <rttr/registration>
 
+#define _dbag_type(type,varName)\
+	type varName; std::string_view _##varName(){return #varName;}
+
 namespace DBAG
 {
 	struct Test {
-		int id;
-		std::string name;
-		float score;
-		std::string date;
+		_dbag_type(int, id);
+		_dbag_type(std::string, name);
+		_dbag_type(float, score);
+		_dbag_type(std::string, date)
 	};
 
 

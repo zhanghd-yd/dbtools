@@ -1,3 +1,4 @@
+
 #ifndef env_data_STRUCT_H
 #define env_data_STRUCT_H
 
@@ -8,7 +9,6 @@
 
 namespace DBAG
 {
-
 	struct env_data {
 		std::string NcFileDataName;
 		std::string Name;
@@ -26,6 +26,7 @@ namespace DBAG
 		float DepthStep;
 		int DepthCount;
 		std::string MD5;
+
 	};
 
 	class env_dataDBGenDao : public BaseDBDao {

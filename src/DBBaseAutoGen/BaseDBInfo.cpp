@@ -4,7 +4,12 @@
 
 using namespace DBAG;
 
-std::string FieldInfo::getSQLCond() {
+std::string FieldSelectedInfo::getSQLCond() {
+    if (!checkSupportWhereCond(_type, _cond)) {
+        DLOG(INFO) << "failed fieldInfo._type:" << static_cast<int>(_type) << " fieldInfo._cond: " << static_cast<int>(_cond);
+        assert(false);
+    }
+
     std::string s;
     switch (_cond)
     {
@@ -33,48 +38,34 @@ std::string FieldInfo::getSQLCond() {
         s = " {} {} = '{}'";
         break;
 
-        //only support date(yyyy-MM-dd) !!
     case WhereCond::DATEEQUAL:
-        s = " {} STR_TO_DATE({}, '%Y%m%d') = STR_TO_DATE('{}', '%Y-%m-%d')";
+    case WhereCond::DATETIMEEQUAL:
+        s = " {} {} = '{}'";
         break;
     case WhereCond::DATELESS:
-        s = " {} STR_TO_DATE({}, '%Y%m%d') < STR_TO_DATE('{}', '%Y-%m-%d')";
+    case WhereCond::DATETIMELESS:
+        s = " {} {} < '{}'";
         break;
     case WhereCond::DATELESSEQUAL:
-        s = " {} STR_TO_DATE({}, '%Y%m%d') <= STR_TO_DATE('{}', '%Y-%m-%d')";
+    case WhereCond::DATETIMELESSEQUAL:
+        s = " {} {} <= '{}'";
         break;
     case WhereCond::DATEMORE:
-        s = " {} STR_TO_DATE({}, '%Y%m%d') > STR_TO_DATE('{}', '%Y-%m-%d')";
+    case WhereCond::DATETIMEMORE:
+        s = " {} {} > '{}'";
         break;
     case WhereCond::DATEMOREEQUAL:
-        s = " {} STR_TO_DATE({}, '%Y%m%d') >= STR_TO_DATE('{}', '%Y-%m-%d')";
-        break;
-
-        //only support datetime(yyyy-MM-dd HH:mm:ss) !!
-    case WhereCond::DATETIMEEQUAL:
-        s = " {} to_date({}, 'yyyy-mm-dd hh24:mi:ss') = to_date('{}', 'yyyy-mm-dd hh24:mi:ss')";
-        break;
-    case WhereCond::DATETIMELESS:
-        s = " {} to_date({}, 'yyyy-mm-dd hh24:mi:ss') < to_date('{}', 'yyyy-mm-dd hh24:mi:ss')";
-        break;
-    case WhereCond::DATETIMELESSEQUAL:
-        s = " {} to_date({}, 'yyyy-mm-dd hh24:mi:ss') <= to_date('{}', 'yyyy-mm-dd hh24:mi:ss')";
-        break;
-    case WhereCond::DATETIMEMORE:
-        s = " {} to_date({}, 'yyyy-mm-dd hh24:mi:ss') > to_date('{}', 'yyyy-mm-dd hh24:mi:ss')";
-        break;
     case WhereCond::DATETIMEMOREEQUAL:
-        s = " {} to_date({}, 'yyyy-mm-dd hh24:mi:ss') >= to_date('{}', 'yyyy-mm-dd hh24:mi:ss')";
+        s = " {} {} >= '{}'";
         break;
-
     default:
-        assert(true);
+        assert(false);
         break;
     }
     return move(s);
 }
 
-std::string DBAG::BaseDBDao::genSelectSQL(const std::vector<FieldInfo>& infos)
+std::string DBAG::BaseDBDao::genSelectSQL(const std::vector<FieldSelectedInfo>& infos)
 {
     std::stringstream ss;
     //DLOG(INFO) << "tableName : " << getTableName();
@@ -95,54 +86,25 @@ std::string DBAG::BaseDBDao::genSelectSQL(const std::vector<FieldInfo>& infos)
     ss << baseSQL;
     for (auto fieldInfo : infos) {
         //DLOG(INFO) << fieldInfo._name << " "  << static_cast<int>(fieldInfo._type);
+        if (!fieldInfo._enable) continue;
+
         std::string wcond;
         switch (fieldInfo._type)
         {
-        case FieldType::INT: {
-            if (fieldInfo._cond == WhereCond::IN) {
-                wcond = fmt::format(fieldInfo.getSQLCond(), fieldInfo._conn, fieldInfo._name, std::any_cast<std::string>(fieldInfo._value));
-            } else {
-                wcond = fmt::format(fieldInfo.getSQLCond(), fieldInfo._conn, fieldInfo._name, std::any_cast<int>(fieldInfo._value));
-            }
-            break;
-        }
-        case FieldType::LONGLONG: {
-            if (fieldInfo._cond == WhereCond::IN) {
-                wcond = fmt::format(fieldInfo.getSQLCond(), fieldInfo._conn, fieldInfo._name, std::any_cast<std::string>(fieldInfo._value));
-            } else {
-                wcond = fmt::format(fieldInfo.getSQLCond(), fieldInfo._conn, fieldInfo._name, std::any_cast<long long>(fieldInfo._value));
-            }
-            break;
-        }
-        case FieldType::FLOAT: {
-            if (fieldInfo._cond == WhereCond::IN) {
-                wcond = fmt::format(fieldInfo.getSQLCond(), fieldInfo._conn, fieldInfo._name, std::any_cast<std::string>(fieldInfo._value));
-            } else {
-                wcond = fmt::format(fieldInfo.getSQLCond(), fieldInfo._conn, fieldInfo._name, std::any_cast<float>(fieldInfo._value));
-            }
-            break;
-        }
-        case FieldType::DOUBLE: {
-            if (fieldInfo._cond == WhereCond::IN) {
-                wcond = fmt::format(fieldInfo.getSQLCond(), fieldInfo._conn, fieldInfo._name, std::any_cast<std::string>(fieldInfo._value));
-            } else {
-                wcond = fmt::format(fieldInfo.getSQLCond(), fieldInfo._conn, fieldInfo._name, std::any_cast<double>(fieldInfo._value));
-            }
-            break;
-        }
+        case FieldType::INT:
+        case FieldType::LONGLONG:
+        case FieldType::FLOAT:
+        case FieldType::DOUBLE:
+        case FieldType::DATE:
+        case FieldType::DATETIME:
         case FieldType::STRING: {
-            wcond = fmt::format(fieldInfo.getSQLCond(), fieldInfo._conn, fieldInfo._name, std::any_cast<std::string>(fieldInfo._value));
+            wcond = fmt::format(fieldInfo.getSQLCond(), fieldInfo._conn, fieldInfo._name, fieldInfo._value);
             break;
         }
-        case FieldType::DATE: {
-            wcond = fmt::format(fieldInfo.getSQLCond(), fieldInfo._conn, fieldInfo._name, std::any_cast<std::string>(fieldInfo._value));
-            break;
-        }
-        case FieldType::DATETIME: {
-            wcond = fmt::format(fieldInfo.getSQLCond(), fieldInfo._conn, fieldInfo._name, std::any_cast<std::string>(fieldInfo._value));
-            break;
-        }
+       
         default: {
+            DLOG(INFO) << "unknow fieldInfo._type:" << static_cast<int>(fieldInfo._type);
+            assert(false);
             break;
         }
         }

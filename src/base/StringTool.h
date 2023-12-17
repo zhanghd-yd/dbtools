@@ -1,6 +1,8 @@
 #ifndef STRING_TOOLS_H
 #define STRING_TOOLS_H
 
+#pragma warning(disable : 4018)//zhd
+
 #ifndef ASSERT
 #define ASSERT Q_ASSERT
 #include <QDebug>

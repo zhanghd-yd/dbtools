@@ -21,7 +21,7 @@
 
 QT_BEGIN_NAMESPACE
 
-class Ui_Form
+class Ui_BaseDBWidget
 {
 public:
     QHBoxLayout *horizontalLayout_3;
@@ -38,12 +38,12 @@ public:
     QPushButton *prePageBtn;
     QPushButton *nextPageBtn;
 
-    void setupUi(QWidget *Form)
+    void setupUi(QWidget *BaseDBWidget)
     {
-        if (Form->objectName().isEmpty())
-            Form->setObjectName(QString::fromUtf8("Form"));
-        Form->resize(1011, 754);
-        horizontalLayout_3 = new QHBoxLayout(Form);
+        if (BaseDBWidget->objectName().isEmpty())
+            BaseDBWidget->setObjectName(QString::fromUtf8("BaseDBWidget"));
+        BaseDBWidget->resize(1011, 754);
+        horizontalLayout_3 = new QHBoxLayout(BaseDBWidget);
         horizontalLayout_3->setObjectName(QString::fromUtf8("horizontalLayout_3"));
         verticalLayout = new QVBoxLayout();
         verticalLayout->setObjectName(QString::fromUtf8("verticalLayout"));
@@ -53,12 +53,12 @@ public:
 
         horizontalLayout_2->addItem(horizontalSpacer_2);
 
-        searchDataBtn = new QPushButton(Form);
+        searchDataBtn = new QPushButton(BaseDBWidget);
         searchDataBtn->setObjectName(QString::fromUtf8("searchDataBtn"));
 
         horizontalLayout_2->addWidget(searchDataBtn);
 
-        delDataBtn = new QPushButton(Form);
+        delDataBtn = new QPushButton(BaseDBWidget);
         delDataBtn->setObjectName(QString::fromUtf8("delDataBtn"));
 
         horizontalLayout_2->addWidget(delDataBtn);
@@ -66,19 +66,19 @@ public:
 
         verticalLayout->addLayout(horizontalLayout_2);
 
-        tableWidget = new QTableWidget(Form);
+        tableWidget = new QTableWidget(BaseDBWidget);
         tableWidget->setObjectName(QString::fromUtf8("tableWidget"));
 
         verticalLayout->addWidget(tableWidget);
 
         horizontalLayout = new QHBoxLayout();
         horizontalLayout->setObjectName(QString::fromUtf8("horizontalLayout"));
-        allSelectBtn = new QPushButton(Form);
+        allSelectBtn = new QPushButton(BaseDBWidget);
         allSelectBtn->setObjectName(QString::fromUtf8("allSelectBtn"));
 
         horizontalLayout->addWidget(allSelectBtn);
 
-        notAllSelectBtn = new QPushButton(Form);
+        notAllSelectBtn = new QPushButton(BaseDBWidget);
         notAllSelectBtn->setObjectName(QString::fromUtf8("notAllSelectBtn"));
 
         horizontalLayout->addWidget(notAllSelectBtn);
@@ -87,12 +87,12 @@ public:
 
         horizontalLayout->addItem(horizontalSpacer);
 
-        prePageBtn = new QPushButton(Form);
+        prePageBtn = new QPushButton(BaseDBWidget);
         prePageBtn->setObjectName(QString::fromUtf8("prePageBtn"));
 
         horizontalLayout->addWidget(prePageBtn);
 
-        nextPageBtn = new QPushButton(Form);
+        nextPageBtn = new QPushButton(BaseDBWidget);
         nextPageBtn->setObjectName(QString::fromUtf8("nextPageBtn"));
 
         horizontalLayout->addWidget(nextPageBtn);
@@ -104,26 +104,26 @@ public:
         horizontalLayout_3->addLayout(verticalLayout);
 
 
-        retranslateUi(Form);
+        retranslateUi(BaseDBWidget);
 
-        QMetaObject::connectSlotsByName(Form);
+        QMetaObject::connectSlotsByName(BaseDBWidget);
     } // setupUi
 
-    void retranslateUi(QWidget *Form)
+    void retranslateUi(QWidget *BaseDBWidget)
     {
-        Form->setWindowTitle(QApplication::translate("Form", "Form", nullptr));
-        searchDataBtn->setText(QApplication::translate("Form", "\346\237\245\350\257\242", nullptr));
-        delDataBtn->setText(QApplication::translate("Form", "\345\210\240\351\231\244", nullptr));
-        allSelectBtn->setText(QApplication::translate("Form", "\345\205\250\351\200\211", nullptr));
-        notAllSelectBtn->setText(QApplication::translate("Form", "\351\235\236\345\205\250\351\200\211", nullptr));
-        prePageBtn->setText(QApplication::translate("Form", "\344\270\212\344\270\200\351\241\265", nullptr));
-        nextPageBtn->setText(QApplication::translate("Form", "\344\270\213\344\270\200\351\241\265", nullptr));
+        BaseDBWidget->setWindowTitle(QApplication::translate("BaseDBWidget", "Form", nullptr));
+        searchDataBtn->setText(QApplication::translate("BaseDBWidget", "\346\237\245\350\257\242", nullptr));
+        delDataBtn->setText(QApplication::translate("BaseDBWidget", "\345\210\240\351\231\244", nullptr));
+        allSelectBtn->setText(QApplication::translate("BaseDBWidget", "\345\205\250\351\200\211", nullptr));
+        notAllSelectBtn->setText(QApplication::translate("BaseDBWidget", "\351\235\236\345\205\250\351\200\211", nullptr));
+        prePageBtn->setText(QApplication::translate("BaseDBWidget", "\344\270\212\344\270\200\351\241\265", nullptr));
+        nextPageBtn->setText(QApplication::translate("BaseDBWidget", "\344\270\213\344\270\200\351\241\265", nullptr));
     } // retranslateUi
 
 };
 
 namespace Ui {
-    class Form: public Ui_Form {};
+    class BaseDBWidget: public Ui_BaseDBWidget {};
 } // namespace Ui
 
 QT_END_NAMESPACE

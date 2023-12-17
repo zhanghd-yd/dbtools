@@ -28,16 +28,13 @@
 		:BaseDBWidget(parent)\
 	{\
 		_helper.setWidegt(this);\
+		_tableName = _helper.getDao().getTableName();\
 	}\
 	void DBAG::DataStruct##DBGenGui::onSearchBtonClicked() {\
-		BaseDBWidget::onSearchBtonClicked();\
-		std::vector<FieldInfo> info = getSelectFieldInfo();\
-		_helper.executeSelect(info);\
+		_helper.executeSelect(std::move(getSelectFieldInfo()));\
 	}\
 	void DBAG::DataStruct##DBGenGui::onDeleteBtonClicked() {\
-		BaseDBWidget::onDeleteBtonClicked();\
-		auto list = getCheckBoxRowList();\
-		_helper.deleteRowData(list);\
+		_helper.deleteRowData(std::move(getCheckBoxRowList()));\
 	}\
 	void DBAG::DataStruct##DBGenGui::loadDefaultTableHeader() {\
 		_helper.loadDefaultTableHeader();\
@@ -68,7 +65,7 @@
 	
 	inline void env_dataDBGenGui::onSearchBtonClicked(){
 		BaseDBWidget::onSearchBtonClicked();
-		std::vector<FieldInfo> info = getSelectFieldInfo();
+		std::vector<FieldSelectedInfo> info = getSelectFieldInfo();
 		_helper.executeSelect(info);
 	}
 	

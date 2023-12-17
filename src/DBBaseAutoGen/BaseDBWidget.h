@@ -8,7 +8,7 @@
 #include <string>
 
 namespace Ui {
-	class Form;
+	class BaseDBWidget;
 } // namespace Ui
 
 namespace DBAG {
@@ -31,9 +31,13 @@ namespace DBAG {
 
 		virtual void loadDefaultTableHeader() = 0;
 
-		std::vector<FieldInfo> getSelectFieldInfo();
+		virtual bool checkFieldSelectedInput();
 
-		std::vector<int> getCheckBoxRowList();
+		inline std::vector<FieldSelectedInfo>&& getSelectFieldInfo() {
+			return std::move(_fieldSelectedInfo);
+		}
+
+		std::vector<int>&& getCheckBoxRowList();
 
 		void setHeader(const QStringList& header);
 
@@ -48,19 +52,33 @@ namespace DBAG {
 
 		QTableWidget* getTableWidget();
 
+		//void parseTableConfig(const std::string& filePath);
+		void parseTableConfig(const QString& filePath);
+
+		const TableKey& getTableKey();
 	public slots:
 		//virtual void onRowDoubleClicked();
 		virtual void onSearchBtonClicked();
-
 		virtual void onDeleteBtonClicked();
+
+		virtual void onBaseSearchBtonClicked();
+		virtual void onBaseDeleteBtonClicked();
 
 
 	protected:
-		Ui::Form* ui;
+		Ui::BaseDBWidget* ui;
 
 		std::vector<std::string> _header;
 		std::map<std::string, std::string> _header_en_name_map;//header name : cn-->en
 
+		std::string _tableName;
+		std::shared_ptr<TableConfig> _tableConfig{};
+		std::string _tableConfigFilePath{};
+
+		std::vector<std::shared_ptr<FieldSelectedInfo>> _selectInfos;
+		std::vector<FieldSelectedInfo> _fieldSelectedInfo; //move to dao
+
+		
 	};
 
 }

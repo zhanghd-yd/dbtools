@@ -1,0 +1,198 @@
+{
+    "Table": "env_data",
+    "Key": {
+        "Column": "NcFileDataName",
+        "Increment": false
+    },
+    "Column": [
+        {
+            "Field": "NcFileDataName",
+            "Type": "string",
+            "Length": 255,
+            "Precision": 0,
+            "Scale": 0,
+            "Nullable": false,
+            "Comment": "文件名",
+            "Selected": []
+        },
+        {
+            "Field": "Name",
+            "Type": "string",
+            "Length": 255,
+            "Precision": 0,
+            "Scale": 0,
+            "Nullable": false,
+            "Comment": "环境数据属性名",
+            "Selected": [
+                {
+                    "Value": "name",
+                    "Cond": 100,
+                    "TableRow": 2,
+                    "Enable": true
+                }
+            ]
+        },
+        {
+            "Field": "TimeStamp",
+            "Type": "datetime",
+            "Length": 0,
+            "Precision": 0,
+            "Scale": 0,
+            "Nullable": false,
+            "Comment": "试验时间",
+            "Selected": [
+                {
+                    "Value": "2023-12-17 20:14:12",
+                    "Cond": 301,
+                    "TableRow": 0,
+                    "Enable": true
+                }
+            ]
+        },
+        {
+            "Field": "LonBegin",
+            "Type": "double",
+            "Length": 0,
+            "Precision": 255,
+            "Scale": 6,
+            "Nullable": true,
+            "Comment": "起始经度",
+            "Selected": [
+                {
+                    "Value": "0.000000",
+                    "Cond": 3,
+                    "TableRow": 1,
+                    "Enable": true
+                }
+            ]
+        },
+        {
+            "Field": "LonEnd",
+            "Type": "double",
+            "Length": 0,
+            "Precision": 255,
+            "Scale": 6,
+            "Nullable": true,
+            "Comment": "终止经度",
+            "Selected": [
+                {
+                    "Value": "99.990000",
+                    "Cond": 1,
+                    "TableRow": 3,
+                    "Enable": true
+                }
+            ]
+        },
+        {
+            "Field": "LonStep",
+            "Type": "double",
+            "Length": 0,
+            "Precision": 255,
+            "Scale": 6,
+            "Nullable": true,
+            "Comment": "经度跨度",
+            "Selected": []
+        },
+        {
+            "Field": "LonCount",
+            "Type": "int",
+            "Length": 255,
+            "Precision": 0,
+            "Scale": 0,
+            "Nullable": true,
+            "Comment": "经度数量",
+            "Selected": []
+        },
+        {
+            "Field": "LatBegin",
+            "Type": "double",
+            "Length": 0,
+            "Precision": 255,
+            "Scale": 6,
+            "Nullable": true,
+            "Comment": "起始纬度",
+            "Selected": []
+        },
+        {
+            "Field": "LatEnd",
+            "Type": "double",
+            "Length": 0,
+            "Precision": 255,
+            "Scale": 6,
+            "Nullable": true,
+            "Comment": "终止纬度",
+            "Selected": []
+        },
+        {
+            "Field": "LatStep",
+            "Type": "double",
+            "Length": 0,
+            "Precision": 255,
+            "Scale": 6,
+            "Nullable": true,
+            "Comment": "纬度跨步",
+            "Selected": []
+        },
+        {
+            "Field": "LatCount",
+            "Type": "int",
+            "Length": 255,
+            "Precision": 0,
+            "Scale": 0,
+            "Nullable": true,
+            "Comment": "纬度数量",
+            "Selected": []
+        },
+        {
+            "Field": "DepthBegin",
+            "Type": "double",
+            "Length": 0,
+            "Precision": 255,
+            "Scale": 6,
+            "Nullable": true,
+            "Comment": "起始深度",
+            "Selected": []
+        },
+        {
+            "Field": "DepthEnd",
+            "Type": "double",
+            "Length": 0,
+            "Precision": 255,
+            "Scale": 0,
+            "Nullable": true,
+            "Comment": "终止深度",
+            "Selected": []
+        },
+        {
+            "Field": "DepthStep",
+            "Type": "double",
+            "Length": 0,
+            "Precision": 255,
+            "Scale": 0,
+            "Nullable": true,
+            "Comment": "深度跨度",
+            "Selected": []
+        },
+        {
+            "Field": "DepthCount",
+            "Type": "int",
+            "Length": 255,
+            "Precision": 0,
+            "Scale": 0,
+            "Nullable": true,
+            "Comment": "深度数量",
+            "Selected": []
+        },
+        {
+            "Field": "MD5",
+            "Type": "string",
+            "Length": 255,
+            "Precision": 0,
+            "Scale": 0,
+            "Nullable": true,
+            "Comment": "nc文件md5验证码",
+            "Selected": []
+        }
+    ],
+    "QueryCount": 4
+}

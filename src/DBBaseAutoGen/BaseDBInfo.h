@@ -32,7 +32,7 @@ namespace DBAG {
 		virtual std::vector<std::string> getColumnList() = 0;
 
 		/////////////////////// gen SQL
-		std::string genSelectSQL(const std::vector<FieldInfo>& infos = std::vector<FieldInfo>());
+		std::string genSelectSQL(const std::vector<FieldSelectedInfo>& infos = std::vector<FieldSelectedInfo>());
 
 		template<class T>
 		std::string genDeleteSQL(T pKey);
@@ -54,7 +54,7 @@ namespace DBAG {
 
 		///////////////////// run SQL
 		template<class T>
-		std::vector<T> executeSelect(const std::vector<FieldInfo>& infos = std::vector<FieldInfo>());
+		std::vector<std::shared_ptr<T>> executeSelect(const std::vector<FieldSelectedInfo>& infos = std::vector<FieldSelectedInfo>());
 
 		template<class T>
 		int executeDelete(T pKey);
@@ -78,7 +78,7 @@ namespace DBAG {
 		int execute(const std::string& sql);
 
 		template<class T>
-		std::vector<T> executeSTMT(const std::string& sql);
+		std::vector<std::shared_ptr<T>> executeSTMT(const std::string& sql);
 	};
 
 	template<class T>
@@ -172,12 +172,12 @@ namespace DBAG {
 	//////////////////////////////////////
 
 	template<class T>
-	inline std::vector<T> BaseDBDao::executeSelect(const std::vector<FieldInfo>& infos)
+	inline std::vector<std::shared_ptr<T>> BaseDBDao::executeSelect(const std::vector<FieldSelectedInfo>& infos)
 	{
 		using namespace rttr;
 		std::string sql = genSelectSQL(infos);
 		
-		std::vector<T> resuls{};
+		std::vector<std::shared_ptr<T>> resuls{};
 
 		MysqlConnectionPool& connectPool = eHualu::ConnectionPools::GetBizSatPool();
 		MYSQL_RES* res_set = connectPool.GetMysqlConnection()->QuerySQL(sql);
@@ -232,11 +232,12 @@ namespace DBAG {
 					MYSQL_TYPE_GEOMETRY = 255,
 				}
 				*/
-				T t{};
+				rttr::variant obj_var = rttr::type::get<T>().create();
+				std::shared_ptr<T> t = obj_var.get_value<std::shared_ptr<T>>();
 				for (int index = 0; index < dbColumnInfo.size(); index++) {
 					char* d = row[index];
 					const auto& p = dbColumnInfo[index];
-					property prop = type::get(t).get_property(p.first);
+					property prop = type::get(t.get()).get_property(p.first);
 					switch (p.second)
 					{
 						//case enum_field_types::MYSQL_TYPE_SHORT:
@@ -268,7 +269,7 @@ namespace DBAG {
 						}
 						default: {
 							DLOG(INFO) << "error: " << p.first << " " << p.second << " " << std::string(d);
-							assert(true);
+							assert(false);
 							break;
 						}
 					}
@@ -329,11 +330,13 @@ namespace DBAG {
 	template<class T>
 	inline int BaseDBDao::executeInsert(std::vector<std::string>& column, std::vector<T> objList)
 	{
+		//TODO
 		return 0;
 	}
 	template<class T>
-	inline std::vector<T> BaseDBDao::executeSTMT(const std::string& sql)
+	inline std::vector<std::shared_ptr<T>> BaseDBDao::executeSTMT(const std::string& sql)
 	{
+		//TODO
 		return std::vector<T>();
 	}
 }

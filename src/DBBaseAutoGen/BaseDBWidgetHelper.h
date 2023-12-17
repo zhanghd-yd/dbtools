@@ -14,11 +14,11 @@ namespace DBAG {
 		explicit BaseDBWidgetHelper();
 		virtual ~BaseDBWidgetHelper();
 
-		void executeSelect(const std::vector<FieldInfo>& infos = std::vector<FieldInfo>());
+		void executeSelect(const std::vector<FieldSelectedInfo>& infos = std::vector<FieldSelectedInfo>());
 
 		int deleteRowData(int row);
 
-		int deleteRowData(const std::vector<int> rowList);
+		int deleteRowData(const std::vector<int>&& rowList);
 
 		void updateWidgetByCurrentSelectCond();
 
@@ -36,8 +36,8 @@ namespace DBAG {
 		T _dao;
 		std::string _D_Name;
 		BaseDBWidget* _widget;
-		std::vector<D> _resultList;
-		std::vector<FieldInfo> _currentCond;
+		std::vector<std::shared_ptr<D>> _resultList;
+		std::vector<FieldSelectedInfo> _currentCond;
 
 	};
 
@@ -50,12 +50,12 @@ namespace DBAG {
 	{}
 
 	template<class T, class D>
-	inline void BaseDBWidgetHelper<T, D>::executeSelect(const std::vector<FieldInfo>& infos)
+	inline void BaseDBWidgetHelper<T, D>::executeSelect(const std::vector<FieldSelectedInfo>& infos)
 	{
 		_widget->clearTable();
 
+		_currentCond = std::move(infos);
 		_resultList = _dao.executeSelect<D>(infos);
-		_currentCond = infos;
 
 		if (_resultList.empty()) return;
 
@@ -72,7 +72,7 @@ namespace DBAG {
 				}
 
 				rttr::property prop = t.get_property(it->second);
-				rttr::variant var = prop.get_value(obj);
+				rttr::variant var = prop.get_value(*obj.get());
 
 				if (prop.get_type() == rttr::type::get<bool>())
 					rowData.emplace_back(std::to_string(static_cast<int>(var.to_bool())));
@@ -120,7 +120,7 @@ namespace DBAG {
 		auto& header_en_name_map = _widget->getHeaderMap();
 		auto& headerlist = _widget->getHeaderList();
 
-		headerlist.emplace_back("selectBox");
+		headerlist.emplace_back(std::string("选择"));
 		
 		rttr::type t = rttr::type::get<D>();
 		for (auto& prop : t.get_properties()) {
@@ -128,7 +128,7 @@ namespace DBAG {
 			headerlist.emplace_back(prop.get_metadata("cn").to_string());
 		}
 
-		headerlist.emplace_back("operator");
+		headerlist.emplace_back(std::string("操作"));
 	}
 
 	template<class T, class D>
@@ -137,7 +137,7 @@ namespace DBAG {
 		if (row < 0 || row >= _resultList.size()) {
 			return std::nullopt;
 		}
-		return _resultList.at(row);
+		return *(_resultList.at(row).get());
 	}
 
 	template<class T, class D>
@@ -146,6 +146,11 @@ namespace DBAG {
 		std::string txt{};
 		do {
 			if (row < 0 || row >= _resultList.size()) {
+				break;
+			}
+
+			auto& obj = getSelectRowObj(row);
+			if (!obj.has_value()) {
 				break;
 			}
 
@@ -158,11 +163,6 @@ namespace DBAG {
 			auto& headerMap = _widget->getHeaderMap();
 			auto& it = headerMap.find(headerText);
 			if (it == headerMap.end()) {
-				break;
-			}
-
-			auto& obj = getSelectRowObj(row);
-			if (!obj.has_value()) {
 				break;
 			}
 
@@ -231,7 +231,7 @@ namespace DBAG {
 		return flag;
 	}
 	template<class T, class D>
-	inline int BaseDBWidgetHelper<T, D>::deleteRowData(const std::vector<int> rowList)
+	inline int BaseDBWidgetHelper<T, D>::deleteRowData(const std::vector<int>&& rowList)
 	{
 		int flag = -1;
 
