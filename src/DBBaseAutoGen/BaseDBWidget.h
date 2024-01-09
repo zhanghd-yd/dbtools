@@ -37,7 +37,7 @@ namespace DBAG {
 			return std::move(_fieldSelectedInfo);
 		}
 
-		std::vector<int>&& getCheckBoxRowList();
+		std::vector<int> getCheckBoxRowList();
 
 		void setHeader(const QStringList& header);
 

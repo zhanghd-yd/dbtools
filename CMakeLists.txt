@@ -106,7 +106,7 @@ message(STATUS "Copying rttr -  done")
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/header)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src)
-aux_source_directory(./src/DBBaseAutoGen BASE_SRC_LIST)
+aux_source_directory(./src/DBBaseAutoGen DBBASE_SRC_LIST)
 aux_source_directory(./src/DBDataAutoGen DATA_SRC_LIST)
 aux_source_directory(./src/DBGUIAutoGen GUI_SRC_LIST)
 aux_source_directory(./src/base BASE_SRC_LIST)
@@ -115,4 +115,4 @@ aux_source_directory(./src/rttr_serialization RTTR_SRC_LIST)
 
 file(GLOB INCLUDE_LIST "*.h" ".hpp")
 
-add_executable(${PROJECT_NAME} main.cpp ${BASE_SRC_LIST} ${DATA_SRC_LIST} ${BASE_SRC_LIST} ${RTTR_SRC_LIST} ${GUI_SRC_LIST} ${DBSERVER_SRC_LIST} ${INCLUDE_LIST})
+add_executable(${PROJECT_NAME} main.cpp ${BASE_SRC_LIST} ${DATA_SRC_LIST} ${DBBASE_SRC_LIST} ${RTTR_SRC_LIST} ${GUI_SRC_LIST} ${DBSERVER_SRC_LIST} ${INCLUDE_LIST})

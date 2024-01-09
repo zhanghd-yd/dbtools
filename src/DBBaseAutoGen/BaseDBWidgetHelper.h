@@ -18,7 +18,7 @@ namespace DBAG {
 
 		int deleteRowData(int row);
 
-		int deleteRowData(const std::vector<int>&& rowList);
+		int deleteRowData(const std::vector<int>& rowList);
 
 		void updateWidgetByCurrentSelectCond();
 
@@ -231,7 +231,7 @@ namespace DBAG {
 		return flag;
 	}
 	template<class T, class D>
-	inline int BaseDBWidgetHelper<T, D>::deleteRowData(const std::vector<int>&& rowList)
+	inline int BaseDBWidgetHelper<T, D>::deleteRowData(const std::vector<int>& rowList)
 	{
 		int flag = -1;
 

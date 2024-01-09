@@ -13,6 +13,8 @@
 
 #include "DBServer/EnvDataManager.h"
 
+#include "DBServer/IomgffManager.h"
+
 template<class T>
 class TestR {
 public:
@@ -107,7 +109,7 @@ int main(int argc, char** argv) {
 
 #if 1
 	MysqlConnectionPool& bizSatPool = eHualu::ConnectionPools::GetBizSatPool();
-	bizSatPool.Connect("127.0.0.1", 3306, "root", "root", "hl_earth_eiea");
+	bizSatPool.Connect("127.0.0.1", 3306, "root", "root", "hl_earth_biz_sat");
 #endif
 
 #if 1 // test ok
@@ -141,7 +143,7 @@ int main(int argc, char** argv) {
 		//dData.NcFileDataName = "NcFileDataName_2";
 		//dao.executeInsert<env_data>(list, dData);
 		
-		std::vector<std::shared_ptr<env_data>> env_dataList = dao.executeSelect<env_data>();
+		//std::vector<std::shared_ptr<env_data>> env_dataList = dao.executeSelect<env_data>();
 		//for (const auto& e : env_dataList) {
 		//	LOG(INFO) << io::to_json(e);
 		//}
@@ -152,7 +154,7 @@ int main(int argc, char** argv) {
 
 	getSupportWhereCond(DBAG::FieldType::LONGLONG);
 
-	BaseDBWidget* gui = new EnvDataManager;
+	BaseDBWidget* gui = new eHualu::IomgffManager;
 	gui->loadTableHeader("../../config/tableConfig/");
 	gui->show();
 

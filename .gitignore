@@ -33,3 +33,4 @@ build/
 .vs/
 
 BaseDBSQLGen.h
+__pycache__/

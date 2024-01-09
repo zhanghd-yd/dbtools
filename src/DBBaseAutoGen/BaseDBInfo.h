@@ -236,6 +236,10 @@ namespace DBAG {
 				std::shared_ptr<T> t = obj_var.get_value<std::shared_ptr<T>>();
 				for (int index = 0; index < dbColumnInfo.size(); index++) {
 					char* d = row[index];
+					if (d == nullptr) {
+						continue;
+					}
+
 					const auto& p = dbColumnInfo[index];
 					property prop = type::get(t.get()).get_property(p.first);
 					switch (p.second)

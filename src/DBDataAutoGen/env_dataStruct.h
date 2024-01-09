@@ -9,35 +9,36 @@
 
 namespace DBAG
 {
-	struct env_data {
-		std::string NcFileDataName;
-		std::string Name;
-		std::string TimeStamp;
-		float LonBegin;
-		float LonEnd;
-		float LonStep;
-		int LonCount;
-		float LatBegin;
-		float LatEnd;
-		float LatStep;
-		int LatCount;
-		float DepthBegin;
-		float DepthEnd;
-		float DepthStep;
-		int DepthCount;
-		std::string MD5;
+    
+            struct env_data {
+                std::string NcFileDataName;
+std::string Name;
+std::string TimeStamp;
+double LonBegin;
+double LonEnd;
+double LonStep;
+int LonCount;
+double LatBegin;
+double LatEnd;
+double LatStep;
+int LatCount;
+double DepthBegin;
+double DepthEnd;
+double DepthStep;
+int DepthCount;
+std::string MD5;
 
-	};
+            };
 
-	class env_dataDBGenDao : public BaseDBDao {
-	public:
+    class env_dataDBGenDao : public BaseDBDao {
+        public:
 
-		virtual std::string& getTableName() override;
+        virtual std::string& getTableName() override;
 
-		virtual std::string& getPrimarykey() override;
+        virtual std::string& getPrimarykey() override;
 
-		virtual std::vector<std::string> getColumnList() override;
-	};
+        virtual std::vector<std::string> getColumnList() override;
+    };
 } // namespace DBAG
 
 #endif

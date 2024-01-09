@@ -67,6 +67,10 @@ BaseDBWidget::BaseDBWidget(QWidget* parent)
 			checkBox->setChecked(false);
 		}
 	});
+
+	//TODO
+	ui->nextPageBtn->hide();
+	ui->prePageBtn->hide();
 }
 
 BaseDBWidget::~BaseDBWidget()
@@ -78,7 +82,7 @@ bool DBAG::BaseDBWidget::checkFieldSelectedInput()
 	return true;
 }
 
-std::vector<int>&& DBAG::BaseDBWidget::getCheckBoxRowList()
+std::vector<int> DBAG::BaseDBWidget::getCheckBoxRowList()
 {
 	std::vector<int> rowList;
 	do {
